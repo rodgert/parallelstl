@@ -59,4 +59,8 @@ namespace std {
     }
 }
 
+#include "algorithm_impl.h"
+#include "numeric_impl.h"
+#include "parallel_backend.h"
+
 #endif /* __PSTL_glue_execution_defs_H */

@@ -22,7 +22,7 @@
 #define __PSTL_glue_memory_impl_H
 
 #include "utils.h"
-#include "algorithm_impl.h"
+#include "algorithm_fwd.h"
 
 namespace std {
 
@@ -37,9 +37,11 @@ uninitialized_copy(_ExecutionPolicy&& __exec, _InputIterator __first, _InputIter
     const auto __is_vector = internal::is_vectorization_preferred<_ExecutionPolicy, _InputIterator, _ForwardIterator>(__exec);
 
     return internal::invoke_if_else(std::integral_constant<bool, std::is_trivial<_ValueType1>::value && std::is_trivial<_ValueType2>::value>(),
-                                    [&]() { return internal::pattern_walk2_brick(__first, __last, __result,
+                                    [&]() {
+																			return internal::pattern_walk2_brick(__first, __last, __result,
                                                                                 [__is_vector](_InputIterator __begin, _InputIterator __end, _ForwardIterator __res)
-                                                                                { return internal::brick_copy(__begin, __end, __res, __is_vector); }, __is_parallel); },
+                                                                                { return internal::brick_copy(__begin, __end, __res, __is_vector); }, __is_parallel);
+																		},
                                     [&]() { return internal::pattern_it_walk2(__first, __last, __result, [](_InputIterator __it1, _ForwardIterator __it2)
                                                                               { ::new (internal::reduce_to_ptr(__it2)) _ValueType2(*__it1); }, __is_vector, __is_parallel); }
     );

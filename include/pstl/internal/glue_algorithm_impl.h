@@ -23,10 +23,10 @@
 
 #include <functional>
 
-#include "execution_defs.h"
+#include "execution_impl.h"
 #include "utils.h"
-#include "algorithm_impl.h"
-#include "numeric_impl.h"  /* count and count_if use pattern_transform_reduce */
+#include "algorithm_fwd.h"
+#include "numeric_fwd.h"  /* count and count_if use pattern_transform_reduce */
 
 namespace std {
 // [alg.any_of]

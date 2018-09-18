@@ -7,6 +7,7 @@
 
         http://www.apache.org/licenses/LICENSE-2.0
 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +18,6 @@
 
 
 */
-
 #ifndef __PSTL_algorithm_impl_H
 #define __PSTL_algorithm_impl_H
 
@@ -25,6 +25,7 @@
 #include <type_traits>
 #include <utility>
 #include <functional>
+
 #include <algorithm>
 
 #include "execution_impl.h"
@@ -285,14 +286,14 @@ _ForwardIterator2 pattern_walk2(_ForwardIterator1 __first1, _ForwardIterator1 __
 }
 
 template<class _ForwardIterator1, class _Size, class _ForwardIterator2, class _Function, class _IsVector>
-_ForwardIterator2 pattern_walk2_n( _ForwardIterator1 __first1, _Size n, _ForwardIterator2 __first2, _Function f,
-                                   _IsVector is_vector, /*parallel=*/std::false_type ) noexcept {
-    return internal::brick_walk2_n(__first1, n, __first2, f, is_vector);
+_ForwardIterator2 pattern_walk2_n( _ForwardIterator1 __first1, _Size __n, _ForwardIterator2 __first2, _Function __f,
+                                   _IsVector __is_vector, /*parallel=*/std::false_type ) noexcept {
+    return internal::brick_walk2_n(__first1, __n, __first2, __f, __is_vector);
 }
 
 template<class _RandomAccessIterator1, class _Size, class _RandomAccessIterator2, class _Function, class _IsVector>
-_RandomAccessIterator2 pattern_walk2_n(_RandomAccessIterator1 __first1, _Size n, _RandomAccessIterator2 __first2, _Function f, _IsVector is_vector, /*parallel=*/std::true_type ) {
-    return internal::pattern_walk2(__first1, __first1 + n, __first2, f, is_vector, std::true_type());
+_RandomAccessIterator2 pattern_walk2_n(_RandomAccessIterator1 __first1, _Size __n, _RandomAccessIterator2 __first2, _Function __f, _IsVector __is_vector, /*parallel=*/std::true_type ) {
+    return internal::pattern_walk2(__first1, __first1 + __n, __first2, __f, __is_vector, std::true_type());
 }
 
 template<class _ForwardIterator1, class _ForwardIterator2, class _Brick>
@@ -350,8 +351,8 @@ _ForwardIterator2 brick_it_walk2( _ForwardIterator1 __first1, _ForwardIterator1 
 }
 
 template<class _ForwardIterator1, class _Size, class _ForwardIterator2, class _Function>
-_ForwardIterator2 brick_it_walk2_n( _ForwardIterator1 __first1, _Size n, _ForwardIterator2 __first2, _Function __f, /*vector=*/std::false_type ) noexcept {
-    for(; n > 0; --n, ++__first1, ++__first2 )
+_ForwardIterator2 brick_it_walk2_n( _ForwardIterator1 __first1, _Size __n, _ForwardIterator2 __first2, _Function __f, /*vector=*/std::false_type ) noexcept {
+    for(; __n > 0; --__n, ++__first1, ++__first2 )
         __f(__first1, __first2);
     return __first2;
 }
@@ -412,14 +413,14 @@ _ForwardIterator3 pattern_walk3( _ForwardIterator1 __first1, _ForwardIterator1 l
 }
 
 template<class _RandomAccessIterator1, class _RandomAccessIterator2, class _RandomAccessIterator3, class _Function, class _IsVector>
-_RandomAccessIterator3 pattern_walk3(_RandomAccessIterator1 __first1, _RandomAccessIterator1 last1, _RandomAccessIterator2 __first2, _RandomAccessIterator3 __first3, _Function __f, _IsVector __is_vector, /*parallel=*/std::true_type ) {
+_RandomAccessIterator3 pattern_walk3(_RandomAccessIterator1 __first1, _RandomAccessIterator1 __last1, _RandomAccessIterator2 __first2, _RandomAccessIterator3 __first3, _Function __f, _IsVector __is_vector, /*parallel=*/std::true_type ) {
     return internal::except_handler([=]() {
         par_backend::parallel_for(
-            __first1, last1,
+            __first1, __last1,
             [__f, __first1, __first2, __first3, __is_vector](_RandomAccessIterator1 __i, _RandomAccessIterator1 __j) {
             internal::brick_walk3(__i, __j, __first2 + (__i - __first1), __first3 + (__i - __first1), __f, __is_vector);
         });
-        return __first3+(last1-__first1);
+        return __first3+(__last1-__first1);
     });
 }
 
@@ -748,8 +749,8 @@ _OutputIterator brick_move(_RandomAccessIterator __first, _RandomAccessIterator 
 //------------------------------------------------------------------------
 // copy_if
 //------------------------------------------------------------------------
-template<class _ForwardIterator, class OutputIterator, class _UnaryPredicate>
-OutputIterator brick_copy_if(_ForwardIterator __first, _ForwardIterator __last, OutputIterator __result, _UnaryPredicate __pred, /*vector=*/std::false_type) noexcept {
+template<class _ForwardIterator, class _OutputIterator, class _UnaryPredicate>
+_OutputIterator brick_copy_if(_ForwardIterator __first, _ForwardIterator __last, _OutputIterator __result, _UnaryPredicate __pred, /*vector=*/std::false_type) noexcept {
     return std::copy_if(__first, __last, __result, __pred);
 }
 
@@ -904,8 +905,8 @@ OutputIterator brick_unique_copy(_ForwardIterator __first, _ForwardIterator __la
     return std::unique_copy(__first, __last, __result, __pred);
 }
 
-template<class _RandomAccessIterator, class OutputIterator, class _BinaryPredicate>
-OutputIterator brick_unique_copy(_RandomAccessIterator __first, _RandomAccessIterator __last, OutputIterator __result, _BinaryPredicate __pred, /*vector=*/std::true_type) noexcept {
+template<class _RandomAccessIterator, class _OutputIterator, class _BinaryPredicate>
+_OutputIterator brick_unique_copy(_RandomAccessIterator __first, _RandomAccessIterator __last, _OutputIterator __result, _BinaryPredicate __pred, /*vector=*/std::true_type) noexcept {
 #if (__PSTL_MONOTONIC_PRESENT)
     return unseq_backend::simd_unique_copy(__first, __last - __first, __result, __pred);
 #else
