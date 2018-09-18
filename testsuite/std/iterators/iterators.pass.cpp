@@ -26,13 +26,12 @@
 #ifdef PSTL_STANDALONE_TESTS
 #include "pstl/execution"
 #include "pstl/algorithm"
-#include "pstl/iterators.h"
 #else
 #include <execution>
 #include <algorithm>
-#include <iterators>
 #endif // PSTL_STANDALONE_TESTS
 
+#include "pstl/iterators.h" // TODO It's possible we want to do something else here?
 #include "support/parallel_utils.h"
 
 using namespace Parallel_TestUtils;

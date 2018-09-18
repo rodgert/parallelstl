@@ -47,7 +47,7 @@ struct test_partition_copy {
         EXPECT_TRUE(std::distance(true_first, actual_ret.first) ==
             std::count_if(first, last, unary_op), "partition_copy has wrong effect from true sequence");
         EXPECT_TRUE(std::distance(false_first, actual_ret.second) ==
-            std::count_if(first, last, __pstl::internal::not_pred<UnaryOp>(unary_op)), "partition_copy has wrong effect from false sequence");
+            std::count_if(first, last, not_pred<UnaryOp>(unary_op)), "partition_copy has wrong effect from false sequence");
     }
 
     //dummy specialization by iterator type and policy type, in case of broken configuration
@@ -92,6 +92,5 @@ int32_t main() {
     test<float64_t>([](const float64_t value) {return value > 2 << 6; });
     test<Wrapper<float64_t>>([](const Wrapper<float64_t>& value) -> bool {return value.get_my_field() != nullptr; });
 
-    std::cout << "done" << std::endl;
     return 0;
 }

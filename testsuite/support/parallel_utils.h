@@ -736,4 +736,16 @@ static const char* done() {
     return "passed";
 #endif
 }
+
+// Internals we re-use in tests
+template<typename T>
+using not_pred = __pstl::internal::not_pred<T>;
+
+template<typename T>
+using equal_value = __pstl::internal::equal_value<T>;
 } /* namespace TestUtils */
+
+#ifndef PSTL_ALT_TEST_MAIN
+#define PSTL_TEST_MAIN
+#else
+#endif // PSTL_ALT_TEST_MAIN

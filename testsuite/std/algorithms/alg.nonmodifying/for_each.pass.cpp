@@ -30,9 +30,6 @@
 
 #include "support/parallel_utils.h"
 
-// TODO remove dependency/move
-#include "pstl/internal/algorithm_impl.h" //for usage a serial pstl::internal::for_each_n function
-
 using namespace Parallel_TestUtils;
 
 template<typename Type>
@@ -79,6 +76,6 @@ int32_t main( ) {
     test<int32_t>();
     test<uint16_t>();
     test<float64_t>();
-    std::cout << "done" << std::endl;
+
     return 0;
 }
